@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wlevs:config xmlns:wlevs="http://www.bea.com/ns/wlevs/config/application"
+              xmlns:jdbc="http://www.oracle.com/ns/ocep/config/jdbc">
+              
+    <processor>
+        <name>CountProcessor</name>
+        <rules>
+        
+            <view id="HashtagView" schema="sensorId category keyword bucketIdMinute timeIdMinute bucketIdHour timeIdHour"> 
+            	<![CDATA[ select sensorId, 'hashtag' as category
+            				, keyword.toLowerCase() as keyword
+            				, createdAt.formatBucket('MINUTE') as bucketIdMinute
+            				, createdAt.formatTimestamp('MINUTE') as timeIdMinute
+            				, createdAt.formatBucket('HOUR') as bucketIdHour
+            				, createdAt.formatTimestamp('HOUR') as timeIdHour
+            				from hashtagChannel ]]> 
+            </view>
+
+            <query id="HashtagCountMinute"> 
+            	<![CDATA[ select sensorId, category, keyword, bucketIdMinute as bucketId, timeIdMinute as timeId, count(*) as counter 
+            			from HashtagView [range 30 seconds slide 30 seconds ] 
+            			group by sensorId, category, keyword, bucketIdMinute, timeIdMinute ]]> 
+            </query>
+
+            <view id="UrlView" schema="sensorId category keyword bucketIdMinute timeIdMinute bucketIdHour timeIdHour"> 
+            	<![CDATA[ select sensorId, 'url' as category
+            				, keyword.toLowerCase() as keyword
+            				, createdAt.formatBucket('MINUTE') as bucketIdMinute
+            				, createdAt.formatTimestamp('MINUTE') as timeIdMinute
+            				, createdAt.formatBucket('HOUR') as bucketIdHour
+            				, createdAt.formatTimestamp('HOUR') as timeIdHour
+            				from urlChannel ]]> 
+            </view>
+
+            <query id="UrlCountMinute"> 
+            	<![CDATA[ select sensorId, category, keyword, bucketIdMinute as bucketId, timeIdMinute as timeId, count(*) as counter 
+            			from UrlView [range 60 seconds slide 60 seconds ] 
+            			group by sensorId, category, keyword, bucketIdMinute, timeIdMinute ]]> 
+            </query>
+
+            <view id="AuthorView" schema="sensorId category keyword bucketIdMinute timeIdMinute bucketIdHour timeIdHour"> 
+            	<![CDATA[ select sensorId, 'author' as category
+            				, keyword.toLowerCase() as keyword
+            				, createdAt.formatBucket('MINUTE') as bucketIdMinute
+            				, createdAt.formatTimestamp('MINUTE') as timeIdMinute
+            				, createdAt.formatBucket('HOUR') as bucketIdHour
+            				, createdAt.formatTimestamp('HOUR') as timeIdHour
+            				from authorChannel ]]> 
+            </view>
+            
+            <query id="AuthorCountMinute"> 
+            	<![CDATA[ select sensorId, category, keyword, bucketIdMinute as bucketId, timeIdMinute as timeId, count(*) as counter 
+            			from AuthorView [range 60 seconds slide 60 seconds ] group by sensorId, category, keyword, bucketIdMinute, timeIdMinute ]]> 
+            </query>
+
+            <view id="MentionView" schema="sensorId category keyword bucketIdMinute timeIdMinute bucketIdHour timeIdHour"> 
+            	<![CDATA[ select sensorId, 'mention' as category
+            				, keyword.toLowerCase() as keyword
+            				, createdAt.formatBucket('MINUTE') as bucketIdMinute
+            				, createdAt.formatTimestamp('MINUTE') as timeIdMinute 
+            				, createdAt.formatBucket('HOUR') as bucketIdHour
+            				, createdAt.formatTimestamp('HOUR') as timeIdHour 
+            				from userMentionChannel ]]> 
+            </view>
+            
+            <query id="MentionCountMinute"> 
+            	<![CDATA[ select sensorId, category, keyword, bucketIdMinute as bucketId, timeIdMinute as timeId, count(*) as counter 
+            			from MentionView [range 60 seconds slide 60 seconds ] group by sensorId, category, keyword, bucketIdMinute, timeIdMinute ]]> 
+            </query>
+
+<!-- 
+            <query id="HashtagCountHour"> 
+            	<![CDATA[ select sensorId, category, keyword, bucketIdHour as bucketId, timeIdHour as timeId, count(*) as counter 
+            			from HashtagView [range 1 minute slide 1 minute ] group by sensorId, category, keyword, bucketIdHour, timeIdHour ]]> 
+            </query>
+            <query id="MentionCountHour"> 
+            	<![CDATA[ select sensorId, category, keyword, bucketIdHour as bucketId, timeIdHour as timeId, count(*) as counter 
+            			from MentionView [range 1 minute slide 30 minute ] group by sensorId, category, keyword, bucketIdHour, timeIdHour ]]> 
+            </query>
+            <query id="AuthorCountHour"> 
+            	<![CDATA[ select sensorId, category, keyword, bucketIdHour as bucketId, timeIdHour as timeId, count(*) as counter 
+            			from AuthorView [range 1 minute slide 30 minute ] group by sensorId, category, keyword, bucketIdHour, timeIdHour ]]> 
+            </query>
+ -->
+        </rules>
+    </processor>
+</wlevs:config>
+

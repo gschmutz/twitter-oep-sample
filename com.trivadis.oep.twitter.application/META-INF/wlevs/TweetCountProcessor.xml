@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wlevs:config xmlns:wlevs="http://www.bea.com/ns/wlevs/config/application"
+              xmlns:jdbc="http://www.oracle.com/ns/ocep/config/jdbc">
+    <processor>
+        <name>TweetMessageCounter</name>
+        <rules>
+            <view id="HashtagView" schema="sensorId category keyword bucketIdMinute timeIdMinute bucketIdHour timeIdHour"> 
+            	<![CDATA[ select sensorId
+            				, "user" as category
+            				, user.screenName	as keyword
+            				, "" as bucketIdMinute
+            				, createdAt as timeIdMinute
+            				, "" as bucketIdHour
+            				, createdAt as timeIdHour
+            				from tweetInputChannel ]]> 
+            </view>
+        </rules>
+    </processor>
+</wlevs:config>
+
+<!-- 
+            				, formatBucket("MINUTE", createdAt) as bucketIdMinute
+
+ -->
+

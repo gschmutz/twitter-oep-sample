@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.trivadis.oep.twitter.kafka</groupId>
+	<artifactId>kafka-adapter</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<description>Twitter Adapter for OEP</description>
+	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka_2.10</artifactId>
+			<version>0.8.0</version>
+		</dependency>
+	
+	</dependencies>
+	<repositories>
+		<repository>
+			<id>clojars.org</id>
+			<url>http://clojars.org/repo</url>
+		</repository>
+	</repositories>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.0.1</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>wrap-my-dependency</id>
+						<goals>
+							<goal>wrap</goal>
+						</goals>
+						<configuration>
+							<wrapImportPackage>;</wrapImportPackage>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<sourceDirectory>src/test/java/</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>*</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>lib/</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+		</resources>
+		<outputDirectory>classes/</outputDirectory>
+	</build>
+
+
+
+
+</project>

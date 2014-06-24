@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wlevs:config xmlns:wlevs="http://www.bea.com/ns/wlevs/config/application"
+              xmlns:jdbc="http://www.oracle.com/ns/ocep/config/jdbc">
+              
+  	<jms-adapter>
+		<name>counterBamAdapter</name>
+		<jndi-provider-url>t3://bam-server:9001</jndi-provider-url>
+		<destination-jndi-name>jms/tweetCountQueue</destination-jndi-name>
+	</jms-adapter>
+	
+	
+  	<jms-adapter>
+		<name>tweetBamAdapter</name>
+		<jndi-provider-url>t3://bam-server:9001</jndi-provider-url>
+		<destination-jndi-name>jms/tweetQueue</destination-jndi-name>
+	</jms-adapter>
+    
+</wlevs:config>
+

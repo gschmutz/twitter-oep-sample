@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:wlevs="http://www.bea.com/ns/wlevs/spring" xmlns:jdbc="http://www.oracle.com/ns/ocep/jdbc"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:spatial="http://www.oracle.com/ns/ocep/spatial"
+	xsi:schemaLocation="
+  http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/osgi
+  http://www.springframework.org/schema/osgi/spring-osgi.xsd
+  http://www.bea.com/ns/wlevs/spring
+  http://www.bea.com/ns/wlevs/spring/spring-wlevs-v11_1_1_7.xsd
+  http://www.oracle.com/ns/ocep/jdbc
+  http://www.oracle.com/ns/ocep/jdbc/ocep-jdbc.xsd
+  http://www.springframework.org/schema/util 
+  http://www.springframework.org/schema/util/spring-util.xsd
+  http://www.oracle.com/ns/ocep/spatial
+  http://www.oracle.com/ns/ocep/spatial/ocep-spatial.xsd">
+
+	<wlevs:event-type-repository>
+		<wlevs:event-type type-name="TwitterCountEvent">
+			<wlevs:class>com.trivadis.oep.twitter.event.TwitterCountEvent</wlevs:class>
+		</wlevs:event-type>
+		<wlevs:event-type type-name="KeywordEvent">
+			<wlevs:class>com.trivadis.oep.twitter.event.KeywordEvent</wlevs:class>
+		</wlevs:event-type>
+	</wlevs:event-type-repository>
+ 
+	<wlevs:adapter id="twitterAdapterMh370" provider="twitter-inbound">
+		<wlevs:listener ref="tweetInputChannel" />
+
+		<wlevs:instance-property name="consumerKey" value="otx73CbUxifUcrUQDh1Q" />
+		<wlevs:instance-property name="consumerSecret" value="ig1KIdCojBYJxfByYItGAcOqI4kUglskXi6ZG0iB9Hs" />
+		<wlevs:instance-property name="token" value="1089415459-tZIlqv0lRisesvXs6OkjlNbS5DjuoT8xTC5hppC" />
+		<wlevs:instance-property name="secret" value="BBINocwhtxkDhOLSvfpZCZpO7Yom1I1t82UDCtlSTexnc" />
+
+		<wlevs:instance-property name="sensorId" value="935c5b60-d699-11e2-8b8b-0800200c9a66" />
+		<wlevs:instance-property name="filterTerms" value="#mh370" />
+	</wlevs:adapter>
+ 
+	<wlevs:adapter id="twitterAdapterTechnologies" provider="twitter-inbound">
+		<wlevs:listener ref="tweetInputChannel" />
+
+		<wlevs:instance-property name="consumerKey" value="Tti0mDg1zhbZRh2K6p2w" />
+		<wlevs:instance-property name="consumerSecret" value="rjdAc2uuD3rNsZoo54Y8ApJY8wERlXPG9biw5LYpmkg" />
+		<wlevs:instance-property name="token" value="1089415459-gRUckbo4ThWy54PUfBXc7v1iuCuhV4AlFg4zRmN" />
+		<wlevs:instance-property name="secret" value="0MuAGFAh1ANEzHWAvAFMA8LNMyZLvYyBgbO8xTPb970me" />
+
+		<wlevs:instance-property name="sensorId" value="0eb3c3a0-98ed-11e3-a5e2-0800200c9a66" />
+		<wlevs:instance-property name="filterTerms" value="#bpm,#iot,#bigdata,#InternetOfThings,#m2m,#nosql" />
+	</wlevs:adapter>
+  	
+	<wlevs:adapter id="twitterAdapterSampleStream" provider="twitter-inbound">
+		<wlevs:listener ref="tweetInputChannel" />
+		<wlevs:instance-property name="consumerKey" value="xsucapXWxOgLqRYs0kKVAQ" />
+		<wlevs:instance-property name="consumerSecret" value="4VNeUNg17GS9x92LilWTe8oPLdPVyigTq1Ykcy6JiU" />
+		<wlevs:instance-property name="token" value="1089415459-LaiMQYyhkd65ELiAK6BUAy3LKO19Ev49PYM4xCK" />
+		<wlevs:instance-property name="secret" value="C5zoAUl1Zxv4PYxN0kgNviWODPCC060d8AbpNTLCzdr6q" />
+<!--		
+		<wlevs:instance-property name="numberOfProcessingThreads" value="10"/>
+-->
+		<wlevs:instance-property name="sensorId" value="dd76faf0-97d4-11e3-a5e2-0800200c9a66" />
+	</wlevs:adapter>
+
+	<bean id="tweetCassandraDataObjectProvider" class="com.trivadis.oep.twitter.data.TweetCassandraDataObjectProvider" />
+	<bean id="tweetCountCassandraCounterDataObjectProvider" class="com.trivadis.oep.twitter.data.TweetCountCassandraCounterDataObjectProvider" />
+
+	<wlevs:adapter id="cassandraInsertAdapter" provider="cassandra-insert">
+		<wlevs:instance-property name="cassandraHosts" value="localhost" />
+		<wlevs:instance-property name="cassandraPort" value="9042" />
+		<wlevs:instance-property name="keyspaceName" value="oep_demo" />
+		<wlevs:instance-property name="cassandraDataProvider" ref="tweetCassandraDataObjectProvider" />
+	</wlevs:adapter>
+
+	<wlevs:adapter id="cassandraCounterAdapter" provider="cassandra-count">
+		<wlevs:instance-property name="cassandraHosts" value="localhost" />
+		<wlevs:instance-property name="cassandraPort" value="9042" />
+		<wlevs:instance-property name="keyspaceName" value="oep_demo" />
+		<wlevs:instance-property name="cassandraDataProvider" ref="tweetCountCassandraCounterDataObjectProvider" />
+	</wlevs:adapter>
+
+	<wlevs:channel id="tweetInputChannel" event-type="TweetEvent">
+		<wlevs:listener ref="hastagExtractorBean" />
+		<wlevs:listener ref="cassandraInsertAdapter" />
+		<wlevs:listener ref="userMentionExtractorBean" />
+		<wlevs:listener ref="urlExtractorBean" />
+		<wlevs:listener ref="tweetBamAdapter" />
+		<wlevs:listener ref="authorExtractorBean" />
+	</wlevs:channel>
+
+	<wlevs:channel id="hashtagChannel" event-type="KeywordEvent">
+		<wlevs:listener ref="CountProcessor" />
+	</wlevs:channel>
+	<wlevs:channel id="urlChannel" event-type="KeywordEvent">
+		<wlevs:listener ref="CountProcessor" />
+	</wlevs:channel>
+	<wlevs:channel id="userMentionChannel" event-type="KeywordEvent">
+		<wlevs:listener ref="CountProcessor" />
+	</wlevs:channel>
+
+	<wlevs:event-bean id="hastagExtractorBean"
+		class="com.trivadis.oep.twitter.bean.HashtagExtractorBean">
+		<wlevs:listener ref="hashtagChannel" />
+	</wlevs:event-bean>
+	<wlevs:event-bean id="urlExtractorBean"
+		class="com.trivadis.oep.twitter.bean.UrlExtractorBean">
+		<wlevs:listener ref="urlChannel" />
+	</wlevs:event-bean>
+	<wlevs:event-bean id="userMentionExtractorBean"
+		class="com.trivadis.oep.twitter.bean.UserMentionExtractorBean">
+		<wlevs:listener ref="userMentionChannel" />
+	</wlevs:event-bean>
+	<wlevs:event-bean id="authorExtractorBean"
+		class="com.trivadis.oep.twitter.bean.AuthorExtractorBean">
+		<wlevs:listener ref="authorChannel" />
+	</wlevs:event-bean>
+	
+	<wlevs:processor id="CountProcessor">
+		<wlevs:listener ref="resultChannel" />
+	</wlevs:processor>
+	
+	<bean id="outputBean" class="com.trivadis.oep.twitter.bean.OutputBean"/>
+
+	<wlevs:channel id="resultChannel" event-type="TwitterCountEvent">
+		<wlevs:listener ref="cassandraCounterAdapter" />
+		<wlevs:listener ref="counterBamAdapter" />
+	</wlevs:channel>
+	
+	<bean id="twitterCountEventConverter" class="com.trivadis.oep.twitter.converter.TwitterCountEventToMapMessageConverter"/>
+	<bean id="tweetEventConverter" class="com.trivadis.oep.twitter.converter.TweetEventToMapMessageConverter"/>
+	
+	<wlevs:adapter id="counterBamAdapter" provider="jms-outbound">
+ 		<wlevs:instance-property name="converterBean" ref="twitterCountEventConverter"/>
+	</wlevs:adapter>
+	<wlevs:adapter id="tweetBamAdapter" provider="jms-outbound">
+ 		<wlevs:instance-property name="converterBean" ref="tweetEventConverter"/>
+	</wlevs:adapter>
+
+	<wlevs:channel id="authorChannel" event-type="KeywordEvent">
+		<wlevs:listener ref="CountProcessor" />
+	</wlevs:channel>
+</beans>
+

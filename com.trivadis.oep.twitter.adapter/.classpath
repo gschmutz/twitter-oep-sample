@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbc-core-1.4.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hbc-twitter4j-v3-1.4.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/httpcore-4.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/joauth-4.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsr305-1.3.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/scala-library-2.9.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/twitter4j-core-3.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/twitter4j-stream-3.0.5.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="com.bea.wlevs.eclipse.tools.core.ocepClasspath"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
